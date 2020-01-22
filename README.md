@@ -1,5 +1,30 @@
-In November 2016, the Go and Go Mono fonts which are sans-serif 
-and monospaced respectively were released by type designers
-Charles Bigelow and Kris Holmes. Both fonts adhere to WGL4 
-and were designed to be legible with a large x-height 
-and distinct letterforms by conforming to the DIN 1450 standard
+```asm
+mov ah, 0x0e ; tty
+
+mov al, [the_secret]
+int 0x10 ; we already saw this doesn't work, right?
+
+mov bx, 0x7c0 ; remember, the segment is automatically <<4 for you
+mov ds, bx
+; WARNING: from now on all memory references will be offset by 'ds' implicitly
+mov al, [the_secret]
+int 0x10
+
+mov al, [es:the_secret]
+int 0x10 ; doesn't look right... isn't 'es' currently 0x000?
+
+mov bx, 0x7c0
+mov es, bx
+mov al, [es:the_secret]
+int 0x10
+
+
+jmp $
+
+the_secret:
+    db "X"
+
+times 510 - ($-$$) db 0
+dw 0xaa55
+
+```
